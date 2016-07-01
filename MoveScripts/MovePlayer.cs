@@ -26,7 +26,7 @@ public class MovePlayer : MonoBehaviour {
     bool jump;
     bool grounded;
 
-    BallDirection ballDirect;
+    public BallDirection ballDirect;
    // Dictionary<Material, string> playerColor= new Dictionary<Material, string>();
     public Material red;
     public Material green;
@@ -38,7 +38,7 @@ public class MovePlayer : MonoBehaviour {
     MeshRenderer playerMesh;
    // public Material[] aMaterials;
     void Start() {
-        ballDirect =new BallDirection();
+       // ballDirect =new BallDirection();
         ballDirect = BallDirection.forward;
         //playerColor.Add(red,Colors.Red);
         //playerColor.Add(green,Colors.Green);
@@ -60,11 +60,12 @@ public class MovePlayer : MonoBehaviour {
       //  Debug.Log(Input.acceleration.x);
         acceleration.text = Input.acceleration.x.ToString();
         
-        if ((_charcontroller.isGrounded && jump == true)&& grounded==true) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
+        if ((_charcontroller.isGrounded && jump == true)) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
 
             Debug.Log("jump");
             // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
-            // Time.timeScale = 0.5f;
+            Time.timeScale = 0.9f;
+            StartCoroutine(ReturnTimeScale());
             grounded = false;
 
             ChangeColor();
@@ -75,14 +76,11 @@ public class MovePlayer : MonoBehaviour {
 
 
         }
-        if (_charcontroller.isGrounded && grounded ==false) {
-           // jump = false;
-            grounded = true;
-        }
+    
 
         if (Input.GetAxis("Horizontal")<-0.5f && jump==true || Input.acceleration.x<-0.15f && jump==true) {
             jump = false;
-           // Time.timeScale = 0.5f;
+            Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
             playerTrans.transform.DOMoveX(playerTrans.position.x-1,1f);
             ballDirect = BallDirection.left;
@@ -90,38 +88,40 @@ public class MovePlayer : MonoBehaviour {
 
         if (Input.GetAxis("Horizontal") > 0.5f && jump==true || Input.acceleration.x > 0.15f && jump == true) {
             jump = false;
-           // Time.timeScale = 0.5f;
+            Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
             playerTrans.transform.DOMoveX(playerTrans.position.x + 1, 1f);
             ballDirect = BallDirection.right;
         }
 
+        //if (_charcontroller.isGrounded && grounded == false) {
+        //  //  jump = false;
+        //    grounded = true;
+        //}
+
         if (_charcontroller.isGrounded == false) {
-            _verticalSpeed += _gravity * 3 * Time.deltaTime;
+            _verticalSpeed += _gravity * 2 * Time.deltaTime;
             if (_verticalSpeed <= _gravity) {
                 _verticalSpeed = _gravity;
             }
-            Debug.Log(_verticalSpeed);
+           // Debug.Log(_verticalSpeed);
         } 
 
        
         movement = new Vector3(0,0, _speed);
-
-      //  Debug.Log(_verticalSpeed);
         movement.y = _verticalSpeed;
         movement *= Time.deltaTime;
         _charcontroller.Move(movement);
 
-     // Debug.Log(_charcontroller.isGrounded);
-
-    }
-
-
-    void CheckGround() {
         if (_charcontroller.isGrounded) {
-            jump = true;
+            jump = false;
         }
+    //   Debug.Log(ballDirect);
+
     }
+
+
+    
     public void Jump() {
 
         // Debug.Log("JumpButton");
@@ -183,7 +183,9 @@ public class MovePlayer : MonoBehaviour {
     }
 
     public void RedButton() {
-        if (grounded) {
+
+        Debug.Log("Red");
+        if (_charcontroller.isGrounded) {
             return;
         }
         var ball = Instantiate(PaintBall,playerTrans.position,Quaternion.identity) as GameObject;
@@ -192,7 +194,7 @@ public class MovePlayer : MonoBehaviour {
     }
 
     public void GreenButton() {
-        if (grounded) {
+        if (_charcontroller.isGrounded) {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
@@ -201,7 +203,7 @@ public class MovePlayer : MonoBehaviour {
     }
 
     public void BlueButton() {
-        if (grounded) {
+        if (_charcontroller.isGrounded) {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
