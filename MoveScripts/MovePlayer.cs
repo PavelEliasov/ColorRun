@@ -60,7 +60,7 @@ public class MovePlayer : MonoBehaviour {
       //  Debug.Log(Input.acceleration.x);
         acceleration.text = Input.acceleration.x.ToString();
         
-        if ((_charcontroller.isGrounded && jump == true)) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
+        if ((_charcontroller.isGrounded && jump == true)&& grounded==true) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
 
             Debug.Log("jump");
             // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
@@ -74,6 +74,10 @@ public class MovePlayer : MonoBehaviour {
             _verticalSpeed = _jumpForce;
 
 
+        }
+        if (_charcontroller.isGrounded && grounded ==false) {
+           // jump = false;
+            grounded = true;
         }
 
         if (Input.GetAxis("Horizontal")<-0.5f && jump==true || Input.acceleration.x<-0.15f && jump==true) {
@@ -112,6 +116,12 @@ public class MovePlayer : MonoBehaviour {
 
     }
 
+
+    void CheckGround() {
+        if (_charcontroller.isGrounded) {
+            jump = true;
+        }
+    }
     public void Jump() {
 
         // Debug.Log("JumpButton");
