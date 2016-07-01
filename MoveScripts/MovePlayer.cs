@@ -18,6 +18,8 @@ public class MovePlayer : MonoBehaviour {
 
     public float _speed;
     public float _jumpForce;
+    public float _gravity;
+    float _verticalSpeed;
 
     public string color;
 
@@ -31,6 +33,7 @@ public class MovePlayer : MonoBehaviour {
     public Material blue;
 
     Vector3 startPos;
+    Vector3 movement;
 
     MeshRenderer playerMesh;
    // public Material[] aMaterials;
@@ -49,24 +52,28 @@ public class MovePlayer : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        playerTrans.Translate(Vector3.forward * _speed * Time.deltaTime);
-
+        //playerTrans.Translate(Vector3.forward * _speed * Time.deltaTime);
+       
        // _charcontroller.Move(Vector3.zero);
         // Debug.Log(_charcontroller.isGrounded);
 
       //  Debug.Log(Input.acceleration.x);
         acceleration.text = Input.acceleration.x.ToString();
-        if ((grounded && jump == true)){ // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
+        
+        if ((_charcontroller.isGrounded && jump == true)) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
 
             Debug.Log("jump");
-            playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
-           // Time.timeScale = 0.5f;
+            // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
+            // Time.timeScale = 0.5f;
             grounded = false;
 
             ChangeColor();
             startPos = playerTrans.position;
             ballDirect = BallDirection.forward;
-           
+
+            _verticalSpeed = _jumpForce;
+
+
         }
 
         if (Input.GetAxis("Horizontal")<-0.5f && jump==true || Input.acceleration.x<-0.15f && jump==true) {
@@ -85,17 +92,35 @@ public class MovePlayer : MonoBehaviour {
             ballDirect = BallDirection.right;
         }
 
+        if (_charcontroller.isGrounded == false) {
+            _verticalSpeed += _gravity * 3 * Time.deltaTime;
+            if (_verticalSpeed <= _gravity) {
+                _verticalSpeed = _gravity;
+            }
+            Debug.Log(_verticalSpeed);
+        } 
+
+       
+        movement = new Vector3(0,0, _speed);
+
+      //  Debug.Log(_verticalSpeed);
+        movement.y = _verticalSpeed;
+        movement *= Time.deltaTime;
+        _charcontroller.Move(movement);
+
+     // Debug.Log(_charcontroller.isGrounded);
+
     }
 
     public void Jump() {
 
-       // Debug.Log("JumpButton");
-        if (grounded == false) {
-            return;
-        }
-        //if (_charcontroller.isGrounded==false) {
+        // Debug.Log("JumpButton");
+        //if (grounded == false) {
         //    return;
         //}
+        if (_charcontroller.isGrounded == false) {
+            return;
+        }
         jump = true;
 
     }
