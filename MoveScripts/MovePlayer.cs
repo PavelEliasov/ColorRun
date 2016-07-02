@@ -57,6 +57,9 @@ public class MovePlayer : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        StateManager.playerPos = playerTrans.position;
+
+       // Debug.Log(StateManager.playerPos);
         //playerTrans.Translate(Vector3.forward * _speed * Time.deltaTime);
        
        // _charcontroller.Move(Vector3.zero);
@@ -67,7 +70,7 @@ public class MovePlayer : MonoBehaviour {
         
         if ((_charcontroller.isGrounded && jump == true)) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
 
-            Debug.Log("jump");
+          //  Debug.Log("jump");
             // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
             Time.timeScale = 0.9f;
             StartCoroutine(ReturnTimeScale());
@@ -178,25 +181,7 @@ public class MovePlayer : MonoBehaviour {
 
     }
 
-    void OnCollisionEnter(Collision other) {
 
-        Debug.Log("Collision");
-        if (other.gameObject.tag=="Ground") {
-            grounded = true;
-            jump = false;
-          //  Debug.Log("Ground");
-        }
-        else {
-           // grounded = false;
-        }
-
-    }
-
-    void OnCollisionExit(Collision other) {
-        if (other.gameObject.tag=="Ground") {
-            grounded = false;
-        }
-    }
 
     IEnumerator ReturnTimeScale() {
         yield return new WaitForSeconds(1f);
