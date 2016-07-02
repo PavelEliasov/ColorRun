@@ -74,7 +74,7 @@ public class PaintBall : MonoBehaviour {
                 break;
 
         }
-        paintBallTransform.DOMoveZ(startpos.z + 5, 0.5f);
+        paintBallTransform.DOMoveZ(startpos.z + 7, 0.5f);
         paintBallTransform.DOMoveY(startpos.y -3, 0.9f);
 
     }

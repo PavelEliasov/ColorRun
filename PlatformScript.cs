@@ -24,11 +24,13 @@ public class PlatformScript : MonoBehaviour {
 
     MeshRenderer _platformMeshRend;
     Transform _platformTrans;
+    Transform _playerTrans;
 
     Vector3 startPos;
 
     string colorOfPlatform;
-    
+
+       
     public Material red;
     public Material green;
     public Material blue;
@@ -44,7 +46,7 @@ public class PlatformScript : MonoBehaviour {
        
     }
     void Start () {
-
+       // ParticleDust.SetActive(false);
         _platformTrans = GetComponent<Transform>();
         startPos = _platformTrans.position;
 
@@ -52,26 +54,32 @@ public class PlatformScript : MonoBehaviour {
         if (FindObjectOfType<MovePlayer>() !=null) {
             player = FindObjectOfType<MovePlayer>();
         }
-
+        _playerTrans = player.GetComponent<Transform>();
 
         colorOfPlatform = IdentifyColor(_platformMeshRend.material.color);
         _platformMeshRend.enabled = false; 
 
 
-        // Debug.Log(_platformMeshRend.material.color.r);
+     //   Debug.Log(StateManager.playerPos);
 
+    }
+
+    void OnBecameInvisible() {
+      //  Destroy(this.gameObject);
+      //  Debug.Log("Invisible");
     }
 	
 	// Update is called once per frame
 	void Update () {
 
-        if ((_platformTrans.position-StateManager.playerPos).magnitude<15 && hide) {
+        if ((_platformTrans.position-_playerTrans.position).magnitude<15 && hide) {
 
             hide = false;
             StartMove();
             _platformMeshRend.enabled =true;
             // Debug.Log("Uhide");
         }
+       
 	}
 
     //void StartColor(PlatformColor color) {
@@ -184,7 +192,13 @@ public class PlatformScript : MonoBehaviour {
     }
 
     void OnCollisionEnter(Collision other) {
+       
         if (other.gameObject.tag=="Player") {
+            Dust.Instance.gameObject.SetActive(true);
+            Dust.Instance.gameObject.transform.position = _playerTrans.position + Vector3.forward/2 ;
+            Dust.Instance._dustMaterial.SetColor("_Color", _platformMeshRend.material.color);
+            Invoke("DisableDustParticle",1f);
+           
             if (player.color == colorOfPlatform) {
 
                 Debug.Log("Equal Of Colors");
@@ -207,6 +221,9 @@ public class PlatformScript : MonoBehaviour {
       
     }
 
+    void DisableDustParticle() {
+        Dust.Instance.gameObject.SetActive(false);
+    }
     //void OnControllerColliderHit(ControllerColliderHit other) {
 
     //    Debug.Log(other);

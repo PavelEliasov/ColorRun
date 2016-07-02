@@ -51,13 +51,13 @@ public class CameraScript : MonoBehaviour {
         switch (player.ballDirect) {
             case BallDirection.left:
                 move.Append(cameraTransform.DOLocalMoveZ(startPos.z, 1f));
-                move.Join(cameraTransform.DOLocalMoveY(startPos.y + _distance, 1f));
+                move.Join(cameraTransform.DOLocalMoveY(startPos.y + _distance-1, 1f));
                 move.Join(cameraTransform.DOLocalMoveX(startPos.x + _distance-1, 1f));
                 StartCoroutine(AnimateCameraLeft());
                 break;
             case BallDirection.right:
                 move.Append(cameraTransform.DOLocalMoveZ(startPos.z, 1f));
-                move.Join(cameraTransform.DOLocalMoveY(startPos.y + _distance, 1f));
+                move.Join(cameraTransform.DOLocalMoveY(startPos.y + _distance-1, 1f));
                 move.Join(cameraTransform.DOLocalMoveX(startPos.x - _distance+1, 1f));
                 StartCoroutine(AnimateCameraRight());
                 break;

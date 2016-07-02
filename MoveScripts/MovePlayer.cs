@@ -11,19 +11,23 @@ public class MovePlayer : MonoBehaviour {
     }
     // Use this for initialization
     // public LayerMask whatIsGround;
+    public GameObject Smoke;
     public Text acceleration;
     Transform playerTrans;
     Rigidbody playerRigidBody;
     CharacterController _charcontroller;
+    Animator animator;
 
     [SerializeField]
     GameObject PaintBall;
+  
+   
 
     public float _speed;
     public float _jumpForce;
     public float _gravity;
     float _verticalSpeed;
-
+    [HideInInspector]
     public string color;
 
     bool jump;
@@ -33,7 +37,11 @@ public class MovePlayer : MonoBehaviour {
     public BallDirection ballDirect;
 
     public Pallette _pallette=Pallette.RGB;
-   // Dictionary<Material, string> playerColor= new Dictionary<Material, string>();
+    // Dictionary<Material, string> playerColor= new Dictionary<Material, string>();
+   // public SkinnedMeshRenderer playerSkinnedMesh;
+
+    public Material _CharacterMaterial;
+    public Material _SmokeMaterial;
     public Material red;
     public Material green;
     public Material blue;
@@ -46,18 +54,27 @@ public class MovePlayer : MonoBehaviour {
     MeshRenderer playerMesh;
    // public Material[] aMaterials;
     void Start() {
-        ballDirect = BallDirection.forward;
-    
+        Smoke.SetActive(false);
+       // DustParticle.SetActive(false);
+       // _dustMaterial=
 
+
+        Debug.Log(_SmokeMaterial.color);
+        ballDirect = BallDirection.forward;
+
+        animator = GetComponent<Animator>();
+        //  _material.SetColor("_Color",red.color);
+       // _material = playerSkinnedMesh.material;
         playerMesh = GetComponent<MeshRenderer>();
         playerTrans = GetComponent<Transform>();
         playerRigidBody = GetComponent<Rigidbody>();
         _charcontroller = GetComponent<CharacterController>();
+
     }
 
     // Update is called once per frame
     void Update() {
-        StateManager.playerPos = playerTrans.position;
+     //   StateManager.playerPos = playerTrans.position;
 
        // Debug.Log(StateManager.playerPos);
         //playerTrans.Translate(Vector3.forward * _speed * Time.deltaTime);
@@ -70,9 +87,12 @@ public class MovePlayer : MonoBehaviour {
         
         if ((_charcontroller.isGrounded && jump == true)) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
 
-          //  Debug.Log("jump");
+            //  Debug.Log("jump");
             // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
-            Time.timeScale = 0.9f;
+            animator.SetBool("Jump",true);
+          //  DustParticle.SetActive(false);
+            Smoke.SetActive(true);
+            Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
             grounded = false;
 
@@ -102,11 +122,6 @@ public class MovePlayer : MonoBehaviour {
             ballDirect = BallDirection.right;
         }
 
-        //if (_charcontroller.isGrounded && grounded == false) {
-        //  //  jump = false;
-        //    grounded = true;
-        //}
-
         if (_charcontroller.isGrounded == false) {
             _verticalSpeed += _gravity * 2 * Time.deltaTime;
             if (_verticalSpeed <= _gravity) {
@@ -121,11 +136,23 @@ public class MovePlayer : MonoBehaviour {
         movement *= Time.deltaTime;
         _charcontroller.Move(movement);
 
+        if (playerTrans.position.y>=2.5f) {
+            Smoke.SetActive(false);
+           // Debug.Log("Stop Smoke");
+        }
+
+        
         if (_charcontroller.isGrounded) {
+            animator.SetBool("Jump",false);
+            Smoke.SetActive(false);
             jump = false;
         }
     //   Debug.Log(ballDirect);
 
+    }
+
+    void OnCollisionEnter(Collision other) {
+      
     }
 
 
@@ -158,22 +185,43 @@ public class MovePlayer : MonoBehaviour {
           
             case 1:
                 playerMesh.material = green;
+                _CharacterMaterial.SetColor("_Color", green.color);
+                _SmokeMaterial.SetColor("_TintColor", green.color);
+               
+                Debug.Log(_SmokeMaterial.color);
                 color = Colors.Green;
                 break;
             case 2:
                 playerMesh.material = blue;
+                _CharacterMaterial.SetColor("_Color", blue.color);
+                _SmokeMaterial.SetColor("_TintColor", blue.color);
+               
+                Debug.Log(_SmokeMaterial.color);
                 color = Colors.Blue;
+
                 break;
             case 3:
                 playerMesh.material = red;
+                _CharacterMaterial.SetColor("_Color", red.color);
+                _SmokeMaterial.SetColor("_TintColor", red.color);
+                
+                Debug.Log(_SmokeMaterial.color);
                 color = Colors.Red;
                 break;
             case 4:
                 playerMesh.material = black;
+                _CharacterMaterial.SetColor("_Color", black.color);
+                _SmokeMaterial.SetColor("_TintColor", Color.grey);
+              
+                Debug.Log(_SmokeMaterial.color);
                 color = Colors.Black;
                 break;
             case 5:
                 playerMesh.material = yellow;
+                _CharacterMaterial.SetColor("_Color", yellow.color);
+                _SmokeMaterial.SetColor("_TintColor", yellow.color);
+               
+                Debug.Log(_SmokeMaterial.color);
                 color = Colors.Yellow;
                 break;
 
@@ -237,7 +285,10 @@ public class MovePlayer : MonoBehaviour {
     }
 
     public void Startagain() {
+        // System.GC.Collect();
+      //  StateManager.playerPos = Vector3.zero;
 
+      //  Debug.Log(StateManager.playerPos);
         SceneManager.LoadScene("1");
     }
 }
