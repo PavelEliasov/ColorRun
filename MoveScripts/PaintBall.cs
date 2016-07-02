@@ -3,11 +3,14 @@ using System.Collections;
 using DG.Tweening;
 
 public class PaintBall : MonoBehaviour {
+    [HideInInspector]
     public string color;
 
     public Material red;
     public Material green;
     public Material blue;
+    public Material black;
+    public Material yellow;
 
     MeshRenderer paintBallMeshRend;
     Transform paintBallTransform;
@@ -48,6 +51,14 @@ public class PaintBall : MonoBehaviour {
             case Colors.Blue:
                 paintBallMeshRend.material = blue;
                 this.color = Colors.Blue;
+                break;
+            case Colors.Black:
+                paintBallMeshRend.material = black;
+                this.color = Colors.Black;
+                break;
+            case Colors.Yellow:
+                paintBallMeshRend.material = yellow;
+                this.color = Colors.Yellow;
                 break;
         }
 

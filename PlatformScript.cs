@@ -16,6 +16,8 @@ public class PlatformScript : MonoBehaviour {
     public Material red;
     public Material green;
     public Material blue;
+    public Material black;
+    public Material yellow;
 
     MovePlayer player;
     // Use this for initialization
@@ -46,9 +48,23 @@ public class PlatformScript : MonoBehaviour {
            colorOfPlatform = Colors.Blue;
 
         }
-       // Debug.Log(_platformMeshRend.material.color.r);
-	
-	}
+
+        if (_platformMeshRend.material.color.b <0.1f && _platformMeshRend.material.color.g<0.1f &&
+            _platformMeshRend.material.color.r<0.1f) {
+
+            colorOfPlatform = Colors.Black;
+
+        }
+        if ( _platformMeshRend.material.color.g - _platformMeshRend.material.color.r < 0.2f) {
+
+            colorOfPlatform = Colors.Yellow;
+
+        }
+
+
+        // Debug.Log(_platformMeshRend.material.color.r);
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -87,6 +103,14 @@ public class PlatformScript : MonoBehaviour {
             case Colors.Blue:
                 _platformMeshRend.material = blue;
                 colorOfPlatform = Colors.Blue;
+                break;
+            case Colors.Black:
+                _platformMeshRend.material = black;
+                colorOfPlatform = Colors.Black;
+                break;
+            case Colors.Yellow:
+                _platformMeshRend.material = yellow;
+                colorOfPlatform = Colors.Yellow;
                 break;
         }
 

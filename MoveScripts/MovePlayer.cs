@@ -5,7 +5,10 @@ using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class MovePlayer : MonoBehaviour {
-
+    public enum Pallette {
+        RGB,
+        RYB
+    }
     // Use this for initialization
     // public LayerMask whatIsGround;
     public Text acceleration;
@@ -26,11 +29,16 @@ public class MovePlayer : MonoBehaviour {
     bool jump;
     bool grounded;
 
+    [HideInInspector]
     public BallDirection ballDirect;
+
+    public Pallette _pallette=Pallette.RGB;
    // Dictionary<Material, string> playerColor= new Dictionary<Material, string>();
     public Material red;
     public Material green;
     public Material blue;
+    public Material black;
+    public Material yellow;
 
     Vector3 startPos;
     Vector3 movement;
@@ -38,11 +46,8 @@ public class MovePlayer : MonoBehaviour {
     MeshRenderer playerMesh;
    // public Material[] aMaterials;
     void Start() {
-       // ballDirect =new BallDirection();
         ballDirect = BallDirection.forward;
-        //playerColor.Add(red,Colors.Red);
-        //playerColor.Add(green,Colors.Green);
-        //playerColor.Add(blue,Colors.Blue);
+    
 
         playerMesh = GetComponent<MeshRenderer>();
         playerTrans = GetComponent<Transform>();
@@ -138,18 +143,35 @@ public class MovePlayer : MonoBehaviour {
     void ChangeColor() {
         int rand = Random.Range(1, 4);
 
+        if (_pallette==Pallette.RGB) {
+             rand = Random.Range(1, 4);
+        }
+        if (_pallette == Pallette.RYB) {
+             rand = Random.Range(3, 6);
+        }
+       
+
         switch (rand) {
+          
             case 1:
-                playerMesh.material = red;
-                color = Colors.Red;
-                break;
-            case 2:
                 playerMesh.material = green;
                 color = Colors.Green;
                 break;
-            case 3:
+            case 2:
                 playerMesh.material = blue;
                 color = Colors.Blue;
+                break;
+            case 3:
+                playerMesh.material = red;
+                color = Colors.Red;
+                break;
+            case 4:
+                playerMesh.material = black;
+                color = Colors.Black;
+                break;
+            case 5:
+                playerMesh.material = yellow;
+                color = Colors.Yellow;
                 break;
 
         }
@@ -208,6 +230,24 @@ public class MovePlayer : MonoBehaviour {
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
         ball.GetComponent<PaintBall>().ChangeColor(Colors.Blue,ballDirect,startPos);
+        //  ball.ChangeColor(Colors.Red);
+    }
+
+    public void BlackButton() {
+        if (_charcontroller.isGrounded) {
+            return;
+        }
+        var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
+        ball.GetComponent<PaintBall>().ChangeColor(Colors.Black, ballDirect, startPos);
+        //  ball.ChangeColor(Colors.Red);
+    }
+
+    public void YellowButton() {
+        if (_charcontroller.isGrounded) {
+            return;
+        }
+        var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
+        ball.GetComponent<PaintBall>().ChangeColor(Colors.Yellow, ballDirect, startPos);
         //  ball.ChangeColor(Colors.Red);
     }
 
