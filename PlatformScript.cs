@@ -158,8 +158,11 @@ public class PlatformScript : MonoBehaviour {
                 _platformTrans.DOMoveZ(startPos.z, 1f).SetEase(Ease.InOutExpo);
                 break;
             case AnimateDirection.Forward:
-                _platformTrans.position = new Vector3(startPos.x, startPos.y, startPos.z - 20);
-                _platformTrans.DOMoveZ(startPos.z, 1f).SetEase(Ease.InOutExpo);
+                _platformTrans.position = new Vector3(startPos.x, startPos.y-2, startPos.z - 15);
+                Sequence seq = DOTween.Sequence();
+                seq.Append(_platformTrans.DOMoveZ(startPos.z, 0.5f).SetEase(Ease.InOutExpo));
+                seq.Append(_platformTrans.DOMoveY(startPos.y, 1f).SetEase(Ease.InOutExpo));
+
                 break;
 
         }
