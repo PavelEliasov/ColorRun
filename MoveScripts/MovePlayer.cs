@@ -110,7 +110,8 @@ public class MovePlayer : MonoBehaviour {
             jump = false;
             Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
-            playerTrans.transform.DOMoveX(playerTrans.position.x-1,1f);
+          
+            playerTrans.transform.DOMoveX(Mathf.Round( playerTrans.position.x-1),1f);
             ballDirect = BallDirection.left;
         }
 
@@ -118,7 +119,7 @@ public class MovePlayer : MonoBehaviour {
             jump = false;
             Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
-            playerTrans.transform.DOMoveX(playerTrans.position.x + 1, 1f);
+            playerTrans.transform.DOMoveX(Mathf.Round(playerTrans.position.x + 1), 1f);
             ballDirect = BallDirection.right;
         }
 
@@ -188,7 +189,7 @@ public class MovePlayer : MonoBehaviour {
                 _CharacterMaterial.SetColor("_Color", green.color);
                 _SmokeMaterial.SetColor("_TintColor", green.color);
                
-                Debug.Log(_SmokeMaterial.color);
+             //   Debug.Log(_SmokeMaterial.color);
                 color = Colors.Green;
                 break;
             case 2:
@@ -196,7 +197,7 @@ public class MovePlayer : MonoBehaviour {
                 _CharacterMaterial.SetColor("_Color", blue.color);
                 _SmokeMaterial.SetColor("_TintColor", blue.color);
                
-                Debug.Log(_SmokeMaterial.color);
+             //   Debug.Log(_SmokeMaterial.color);
                 color = Colors.Blue;
 
                 break;
@@ -205,7 +206,7 @@ public class MovePlayer : MonoBehaviour {
                 _CharacterMaterial.SetColor("_Color", red.color);
                 _SmokeMaterial.SetColor("_TintColor", red.color);
                 
-                Debug.Log(_SmokeMaterial.color);
+            //    Debug.Log(_SmokeMaterial.color);
                 color = Colors.Red;
                 break;
             case 4:
@@ -213,7 +214,7 @@ public class MovePlayer : MonoBehaviour {
                 _CharacterMaterial.SetColor("_Color", black.color);
                 _SmokeMaterial.SetColor("_TintColor", Color.grey);
               
-                Debug.Log(_SmokeMaterial.color);
+            //    Debug.Log(_SmokeMaterial.color);
                 color = Colors.Black;
                 break;
             case 5:
@@ -221,7 +222,7 @@ public class MovePlayer : MonoBehaviour {
                 _CharacterMaterial.SetColor("_Color", yellow.color);
                 _SmokeMaterial.SetColor("_TintColor", yellow.color);
                
-                Debug.Log(_SmokeMaterial.color);
+              //  Debug.Log(_SmokeMaterial.color);
                 color = Colors.Yellow;
                 break;
 
