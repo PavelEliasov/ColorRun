@@ -59,7 +59,7 @@ public class MovePlayer : MonoBehaviour {
        // _dustMaterial=
 
 
-        Debug.Log(_SmokeMaterial.color);
+      //  Debug.Log(_SmokeMaterial.color);
         ballDirect = BallDirection.forward;
 
         animator = GetComponent<Animator>();
@@ -69,6 +69,8 @@ public class MovePlayer : MonoBehaviour {
         playerTrans = GetComponent<Transform>();
         playerRigidBody = GetComponent<Rigidbody>();
         _charcontroller = GetComponent<CharacterController>();
+
+       // Debug.Log(_charcontroller.detectCollisions);
 
     }
 

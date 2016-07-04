@@ -106,7 +106,7 @@ public class PlatformScript : MonoBehaviour {
 
         }
 
-        if (color.g >color.r && color.g > color.b) {
+        if (color.g >color.r && color.g > color.b && color.g - color.r > 0.2f) {
 
             return Colors.Green;
 
@@ -194,18 +194,22 @@ public class PlatformScript : MonoBehaviour {
     void OnCollisionEnter(Collision other) {
        
         if (other.gameObject.tag=="Player") {
+
+            Debug.Log(colorOfPlatform);
+
             Dust.Instance.gameObject.SetActive(true);
             Dust.Instance.gameObject.transform.position = _playerTrans.position + Vector3.forward/2 ;
             Dust.Instance._dustMaterial.SetColor("_Color", _platformMeshRend.material.color);
             Invoke("DisableDustParticle",1f);
            
             if (player.color == colorOfPlatform) {
-
-                Debug.Log("Equal Of Colors");
+                SceneController.Instance.ChangeScore(10);
+              //  Debug.Log("Equal Of Colors");
             }
             else {
-
-                Debug.Log("Colors not Equal");
+                SceneController.Instance.ChangeScore(-5);
+                SceneController.Instance.RemoveLife();
+                // Debug.Log("Colors not Equal");
             }
         }
       
