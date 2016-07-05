@@ -55,6 +55,9 @@ public class MovePlayer : MonoBehaviour {
     MeshRenderer playerMesh;
    // public Material[] aMaterials;
     void Start() {
+       
+        Debug.Log(Managers._audioManager.SoundEffectVolume);
+
         Smoke.SetActive(false);
        // DustParticle.SetActive(false);
        // _dustMaterial=
