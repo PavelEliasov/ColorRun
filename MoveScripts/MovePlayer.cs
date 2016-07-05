@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 public class MovePlayer : MonoBehaviour {
     public enum Pallette {
         RGB,
-        RYB
+        RYB,//Red Yellow Black
+        Yellow_Black
     }
     // Use this for initialization
     // public LayerMask whatIsGround;
@@ -182,6 +183,9 @@ public class MovePlayer : MonoBehaviour {
         if (_pallette == Pallette.RYB) {
              rand = Random.Range(3, 6);
         }
+        if (_pallette==Pallette.Yellow_Black) {
+            rand = Random.Range(4, 6);
+        }
        
 
         switch (rand) {
@@ -247,7 +251,7 @@ public class MovePlayer : MonoBehaviour {
             return;
         }
         var ball = Instantiate(PaintBall,playerTrans.position,Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(Colors.Red,ballDirect,startPos);
+        ball.GetComponent<PaintBall>().ChangeColor(red.color,Colors.Red,ballDirect,startPos);
       //  ball.ChangeColor(Colors.Red);
     }
 
@@ -256,7 +260,7 @@ public class MovePlayer : MonoBehaviour {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(Colors.Green,ballDirect,startPos);
+        ball.GetComponent<PaintBall>().ChangeColor(green.color,Colors.Green,ballDirect,startPos);
         //  ball.ChangeColor(Colors.Red);
     }
 
@@ -265,7 +269,7 @@ public class MovePlayer : MonoBehaviour {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(Colors.Blue,ballDirect,startPos);
+        ball.GetComponent<PaintBall>().ChangeColor(blue.color,Colors.Blue,ballDirect,startPos);
         //  ball.ChangeColor(Colors.Red);
     }
 
@@ -274,7 +278,7 @@ public class MovePlayer : MonoBehaviour {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(Colors.Black, ballDirect, startPos);
+        ball.GetComponent<PaintBall>().ChangeColor(black.color,Colors.Black, ballDirect, startPos);
         //  ball.ChangeColor(Colors.Red);
     }
 
@@ -283,7 +287,7 @@ public class MovePlayer : MonoBehaviour {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(Colors.Yellow, ballDirect, startPos);
+        ball.GetComponent<PaintBall>().ChangeColor(yellow.color,Colors.Yellow, ballDirect, startPos);
         //  ball.ChangeColor(Colors.Red);
     }
 
