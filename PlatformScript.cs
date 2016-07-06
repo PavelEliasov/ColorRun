@@ -30,6 +30,7 @@ public class PlatformScript : MonoBehaviour {
 
     string colorOfPlatform;
 
+    public float enableDistance=20;
        
     public Material red;
     public Material green;
@@ -72,7 +73,7 @@ public class PlatformScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if ((_platformTrans.position-_playerTrans.position).magnitude<15 && hide) {
+        if ((_platformTrans.position-_playerTrans.position).magnitude< enableDistance && hide) {
 
             hide = false;
             StartMove();

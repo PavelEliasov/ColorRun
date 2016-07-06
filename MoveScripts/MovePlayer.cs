@@ -5,6 +5,11 @@ using DG.Tweening;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class MovePlayer : MonoBehaviour {
+    public enum State {
+        Default,
+        JetPack,
+        Skate
+    }
     public enum Pallette {
         RGB,
         RYB,//Red Yellow Black
@@ -21,8 +26,8 @@ public class MovePlayer : MonoBehaviour {
 
     [SerializeField]
     GameObject PaintBall;
-  
-   
+
+
 
     public float _speed;
     public float _jumpForce;
@@ -32,14 +37,18 @@ public class MovePlayer : MonoBehaviour {
     public string color;
 
     bool jump;
+    bool doubleJump = false;
+    bool secondJump=false;
     bool grounded;
 
     [HideInInspector]
     public BallDirection ballDirect;
 
-    public Pallette _pallette=Pallette.RGB;
+    public State _equipment = State.Default;
+
+    public Pallette _pallette = Pallette.RGB;
     // Dictionary<Material, string> playerColor= new Dictionary<Material, string>();
-   // public SkinnedMeshRenderer playerSkinnedMesh;
+    // public SkinnedMeshRenderer playerSkinnedMesh;
 
     public Material _CharacterMaterial;
     public Material _SmokeMaterial;
@@ -53,52 +62,48 @@ public class MovePlayer : MonoBehaviour {
     Vector3 movement;
 
     MeshRenderer playerMesh;
-   // public Material[] aMaterials;
+    // public Material[] aMaterials;
     void Start() {
-       
+
         Debug.Log(Managers._audioManager.SoundEffectVolume);
 
         Smoke.SetActive(false);
-       // DustParticle.SetActive(false);
-       // _dustMaterial=
+        // DustParticle.SetActive(false);
+        // _dustMaterial=
 
 
-      //  Debug.Log(_SmokeMaterial.color);
+        //  Debug.Log(_SmokeMaterial.color);
         ballDirect = BallDirection.forward;
 
         animator = GetComponent<Animator>();
         //  _material.SetColor("_Color",red.color);
-       // _material = playerSkinnedMesh.material;
+        // _material = playerSkinnedMesh.material;
         playerMesh = GetComponent<MeshRenderer>();
         playerTrans = GetComponent<Transform>();
         playerRigidBody = GetComponent<Rigidbody>();
         _charcontroller = GetComponent<CharacterController>();
 
-       // Debug.Log(_charcontroller.detectCollisions);
+        // Debug.Log(_charcontroller.detectCollisions);
 
     }
 
     // Update is called once per frame
     void Update() {
-     //   StateManager.playerPos = playerTrans.position;
 
-       // Debug.Log(StateManager.playerPos);
-        //playerTrans.Translate(Vector3.forward * _speed * Time.deltaTime);
-       
-       // _charcontroller.Move(Vector3.zero);
-        // Debug.Log(_charcontroller.isGrounded);
-
-      //  Debug.Log(Input.acceleration.x);
         acceleration.text = Input.acceleration.x.ToString();
-        
-        if ((_charcontroller.isGrounded && jump == true)) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
 
+        if ((_charcontroller.isGrounded && jump == true) || doubleJump==true) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
+            if (doubleJump==true) {
+                secondJump = true;
+            }
+            doubleJump = false;
+            jump = true;
             //  Debug.Log("jump");
             // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
             animator.SetBool("Jump",true);
           //  DustParticle.SetActive(false);
             Smoke.SetActive(true);
-            Time.timeScale = 0.7f;
+          //  Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
             grounded = false;
 
@@ -114,7 +119,7 @@ public class MovePlayer : MonoBehaviour {
 
         if (Input.GetAxis("Horizontal")<-0.5f && jump==true || Input.acceleration.x<-0.15f && jump==true) {
             jump = false;
-            Time.timeScale = 0.7f;
+          //  Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
           
             playerTrans.transform.DOMoveX(Mathf.Round( playerTrans.position.x-1),1f);
@@ -123,7 +128,7 @@ public class MovePlayer : MonoBehaviour {
 
         if (Input.GetAxis("Horizontal") > 0.5f && jump==true || Input.acceleration.x > 0.15f && jump == true) {
             jump = false;
-            Time.timeScale = 0.7f;
+           // Time.timeScale = 0.7f;
             StartCoroutine(ReturnTimeScale());
             playerTrans.transform.DOMoveX(Mathf.Round(playerTrans.position.x + 1), 1f);
             ballDirect = BallDirection.right;
@@ -149,10 +154,14 @@ public class MovePlayer : MonoBehaviour {
         }
 
         
-        if (_charcontroller.isGrounded) {
+        if (_charcontroller.isGrounded && grounded==false) {
             animator.SetBool("Jump",false);
             Smoke.SetActive(false);
             jump = false;
+            secondJump = false;
+            grounded = true;
+
+            Debug.Log(grounded);
         }
     //   Debug.Log(ballDirect);
 
@@ -166,14 +175,35 @@ public class MovePlayer : MonoBehaviour {
     
     public void Jump() {
 
-        // Debug.Log("JumpButton");
-        //if (grounded == false) {
-        //    return;
-        //}
-        if (_charcontroller.isGrounded == false) {
-            return;
+
+        switch (_equipment) {
+
+            case State.Default:
+                if (_charcontroller.isGrounded == false) {
+                    return;
+                }
+                jump = true;
+                break;
+
+            case State.JetPack:
+                if (_charcontroller.isGrounded == false && secondJump == true) {
+                    return;
+                }
+                if (_charcontroller.isGrounded == false) {
+                    doubleJump = true;
+                    return;
+                }
+                jump = true;
+                break;
+
+            case State.Skate:
+                break;
+
         }
-        jump = true;
+     
+       
+        Messenger.Broadcast("CameraRotate");
+        
 
     }
 
@@ -248,50 +278,36 @@ public class MovePlayer : MonoBehaviour {
     }
 
     public void RedButton() {
-
-        Debug.Log("Red");
-        if (_charcontroller.isGrounded) {
-            return;
-        }
-        var ball = Instantiate(PaintBall,playerTrans.position,Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(red.color,Colors.Red,ballDirect,startPos);
-      //  ball.ChangeColor(Colors.Red);
+        DropBall(red.color, Colors.Red);
+      
     }
 
     public void GreenButton() {
-        if (_charcontroller.isGrounded) {
-            return;
-        }
-        var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(green.color,Colors.Green,ballDirect,startPos);
-        //  ball.ChangeColor(Colors.Red);
+        DropBall(green.color, Colors.Green);
+      
     }
 
     public void BlueButton() {
-        if (_charcontroller.isGrounded) {
-            return;
-        }
-        var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(blue.color,Colors.Blue,ballDirect,startPos);
-        //  ball.ChangeColor(Colors.Red);
+        DropBall(blue.color, Colors.Blue);
+  
     }
 
     public void BlackButton() {
-        if (_charcontroller.isGrounded) {
-            return;
-        }
-        var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(black.color,Colors.Black, ballDirect, startPos);
-        //  ball.ChangeColor(Colors.Red);
+        DropBall(black.color, Colors.Black);
+
     }
 
     public void YellowButton() {
+        DropBall(yellow.color, Colors.Yellow);
+
+    }
+
+    void DropBall(Color color,string colorName) {
         if (_charcontroller.isGrounded) {
             return;
         }
         var ball = Instantiate(PaintBall, playerTrans.position, Quaternion.identity) as GameObject;
-        ball.GetComponent<PaintBall>().ChangeColor(yellow.color,Colors.Yellow, ballDirect, startPos);
-        //  ball.ChangeColor(Colors.Red);
+        ball.GetComponent<PaintBall>().ChangeColor(color, colorName, ballDirect, startPos);
     }
 
     public void Startagain() {

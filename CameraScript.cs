@@ -15,6 +15,8 @@ public class CameraScript : MonoBehaviour {
     MovePlayer player;
     // Use this for initialization
     void Start () {
+        Messenger.AddListener("CameraRotate",MoveBack);
+
         player = playerTransform.GetComponent<MovePlayer>();
         cameraDirection = new BallDirection();
         move = DOTween.Sequence();
@@ -25,6 +27,9 @@ public class CameraScript : MonoBehaviour {
 
         //Debug.Log(startPos.x);
 	}
+    void OnDestroy() {
+        Messenger.RemoveListener("CameraRotate",MoveBack);
+    }
 	
 	// Update is called once per frame
 	void Update () {
