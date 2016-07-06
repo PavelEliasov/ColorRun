@@ -195,30 +195,30 @@ public class PlatformScript : MonoBehaviour {
 
     }
 
-    void OnCollisionEnter(Collision other) {
+    //void OnCollisionEnter(Collision other) {
        
-        if (other.gameObject.tag=="Player") {
+    //    if (other.gameObject.tag=="Player") {
 
-            Debug.Log(colorOfPlatform);
+    //        Debug.Log(colorOfPlatform);
 
-            Dust.Instance.gameObject.SetActive(true);
-            Dust.Instance.gameObject.transform.position = _playerTrans.position + Vector3.forward/2 ;
-            Dust.Instance._dustMaterial.SetColor("_Color", _platformMeshRend.material.color);
-            Invoke("DisableDustParticle",1f);
+    //        Dust.Instance.gameObject.SetActive(true);
+    //        Dust.Instance.gameObject.transform.position = _playerTrans.position + Vector3.forward/2 ;
+    //        Dust.Instance._dustMaterial.SetColor("_Color", _platformMeshRend.material.color);
+    //        Invoke("DisableDustParticle",1f);
            
-            if (player.color == colorOfPlatform) {
-                SceneController.Instance.ChangeScore(10);
-              //  Debug.Log("Equal Of Colors");
-            }
-            else {
-                SceneController.Instance.ChangeScore(-5);
-                SceneController.Instance.RemoveLife();
-                // Debug.Log("Colors not Equal");
-            }
-        }
+    //        if (player.color == colorOfPlatform) {
+    //            SceneController.Instance.ChangeScore(10);
+    //          //  Debug.Log("Equal Of Colors");
+    //        }
+    //        else {
+    //            SceneController.Instance.ChangeScore(-5);
+    //            SceneController.Instance.RemoveLife();
+    //            // Debug.Log("Colors not Equal");
+    //        }
+    //    }
       
 
-    }
+    //}
 
     void OnTriggerEnter(Collider other) {
         if (other.gameObject.tag == "PaintBall") {
@@ -226,7 +226,27 @@ public class PlatformScript : MonoBehaviour {
             ChangePlatformColor(other.gameObject.GetComponent<PaintBall>().color);
         }
 
-      
+        if (other.gameObject.tag == "Player") {
+
+            Debug.Log(colorOfPlatform);
+
+            Dust.Instance.gameObject.SetActive(true);
+            Dust.Instance.gameObject.transform.position = _playerTrans.position + Vector3.forward / 2;
+            Dust.Instance._dustMaterial.SetColor("_Color", _platformMeshRend.material.color);
+            Invoke("DisableDustParticle", 1f);
+
+            if (player.color == colorOfPlatform) {
+                SceneController.Instance.ChangeScore(10);
+                //  Debug.Log("Equal Of Colors");
+            }
+            else {
+                SceneController.Instance.ChangeScore(-5);
+                SceneController.Instance.RemoveLife();
+                // Debug.Log("Colors not Equal");
+            }
+        }
+
+
     }
 
     void DisableDustParticle() {

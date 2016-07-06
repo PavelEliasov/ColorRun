@@ -23,6 +23,7 @@ public class MovePlayer : MonoBehaviour {
     Rigidbody playerRigidBody;
     CharacterController _charcontroller;
     Animator animator;
+    AudioSource _audioController;
 
     [SerializeField]
     GameObject PaintBall;
@@ -33,6 +34,7 @@ public class MovePlayer : MonoBehaviour {
     public float _jumpForce;
     public float _gravity;
     float _verticalSpeed;
+    float _fallingForce;
     [HideInInspector]
     public string color;
 
@@ -58,6 +60,9 @@ public class MovePlayer : MonoBehaviour {
     public Material black;
     public Material yellow;
 
+    public AudioClip [] groundedSounds;
+    public AudioClip jumpsound;
+
     Vector3 startPos;
     Vector3 movement;
 
@@ -82,6 +87,7 @@ public class MovePlayer : MonoBehaviour {
         playerTrans = GetComponent<Transform>();
         playerRigidBody = GetComponent<Rigidbody>();
         _charcontroller = GetComponent<CharacterController>();
+        _audioController = GetComponent<AudioSource>();
 
         // Debug.Log(_charcontroller.detectCollisions);
 
@@ -94,10 +100,12 @@ public class MovePlayer : MonoBehaviour {
 
         if ((_charcontroller.isGrounded && jump == true) || doubleJump==true) { // ||  (grounded == true && Input.GetKeyDown(KeyCode.Space))) {
             if (doubleJump==true) {
+                animator.SetBool("DoubleJump", true);
                 secondJump = true;
             }
             doubleJump = false;
-            jump = true;
+            _audioController.PlayOneShot(jumpsound,Managers._audioManager.SoundEffectVolume);
+           // jump = true;
             //  Debug.Log("jump");
             // playerRigidBody.AddForce(Vector3.up*_jumpForce,ForceMode.Impulse);
             animator.SetBool("Jump",true);
@@ -107,7 +115,7 @@ public class MovePlayer : MonoBehaviour {
             StartCoroutine(ReturnTimeScale());
             grounded = false;
 
-            ChangeColor();
+          
             startPos = playerTrans.position;
             ballDirect = BallDirection.forward;
 
@@ -136,6 +144,9 @@ public class MovePlayer : MonoBehaviour {
 
         if (_charcontroller.isGrounded == false) {
             _verticalSpeed += _gravity * 2 * Time.deltaTime;
+            _fallingForce += Time.deltaTime;
+
+          //  Debug.Log(_fallingForce);
             if (_verticalSpeed <= _gravity) {
                 _verticalSpeed = _gravity;
             }
@@ -156,19 +167,30 @@ public class MovePlayer : MonoBehaviour {
         
         if (_charcontroller.isGrounded && grounded==false) {
             animator.SetBool("Jump",false);
+            animator.SetBool("DoubleJump", false);
             Smoke.SetActive(false);
             jump = false;
             secondJump = false;
             grounded = true;
-
-            Debug.Log(grounded);
+           // _fallingForce = 0;
+           // Debug.Log(grounded);
         }
     //   Debug.Log(ballDirect);
 
     }
 
     void OnCollisionEnter(Collision other) {
+
+        Debug.Log("Collision");
       
+    }
+    void OnTriggerEnter(Collider other) {
+
+        Debug.Log("TriggerEnter");
+        if (other.gameObject.tag=="Ground") {
+            _audioController.PlayOneShot(groundedSounds[Random.Range(0,groundedSounds.Length)],Managers._audioManager.SoundEffectVolume*0.2f*_fallingForce);
+            _fallingForce = 0;
+        }
     }
 
 
@@ -182,6 +204,7 @@ public class MovePlayer : MonoBehaviour {
                 if (_charcontroller.isGrounded == false) {
                     return;
                 }
+                ChangeColor();
                 jump = true;
                 break;
 
@@ -193,6 +216,7 @@ public class MovePlayer : MonoBehaviour {
                     doubleJump = true;
                     return;
                 }
+                ChangeColor();
                 jump = true;
                 break;
 

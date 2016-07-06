@@ -86,7 +86,7 @@ public class PaintBall : MonoBehaviour {
 
         }
         paintBallTransform.DOMoveZ(startpos.z + 8, 0.5f);
-        paintBallTransform.DOMoveY(startpos.y -20, 5f);
+        paintBallTransform.DOMoveY(startpos.y -20, 4f);
        // paintballRigigdbody.AddForce(Vector3.forward*1000+Vector3.down*500);
 
     }
